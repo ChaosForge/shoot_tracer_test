@@ -33,32 +33,35 @@ def trace_shoot(m,source,destination):
         y0 += sy 
         err += dx
         inc_y = True
-
+    
     if m[y0][x0]: # if there is a wall we try to find next free spot
-        if not inc_x:
-            x0 += sx 
-        if not inc_y:
+        if not inc_x: # position refinment for cover
+            x0 += sx
+        if not inc_y: # position refinment for cover
             y0 += sy 
 
-        if inc_x and inc_y:
+        if inc_x and inc_y: # we've moved diagonally and there is a cover, let's check other options
             e2 = 2 * err
+            
             if abs(dx) == abs(dy): # ideally diagonal - no hit chance
                 return (route,False)
-            if e2 <= dx and not m[y0][x0 - sx]:
+
+            if abs(dx) < abs(dy) and not m[y0][x0 - sx]: # check if target is below or above the diagonal line
                 x0 -= sx
-            elif e2 >= dy and not m[y0 - sy][x0]:
+            elif abs(dy) < abs(dx) and not m[y0 - sy][x0]:
                 y0 -= sy 
 
-        # recalculate dy and dx
+        # recalculate dy and dx and error since we want to start from new position
         dy = -abs(y1 - y0)
         dx = abs(x1 - x0)
         err = dx + dy
     
-    if m[y0][x0]: # still no route to target
+    if m[y0][x0]: # still obstacle so no route to target
         route.append((x0,y0))
         return (route,False)
     route.append((x0,y0))
-
+    
+    # continue with normal bresenham
     while(True):
         e2 = 2 * err
         if e2 >= dy:
