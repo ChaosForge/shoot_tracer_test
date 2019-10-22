@@ -5,61 +5,74 @@ def sign( x ):
         return 0
     return 1 if x > 0 else -1
 
-def trace_shoot(m,source,destination):
-    route = []
-
+def refine_src_position(m,source,destination):
     x0,y0 = source
-    x1,y1 = destination
+    x1,y1 = destination 
 
     sx = sign(x1 - x0)
     sy = sign(y1 - y0)
-    dy = -abs(y1 - y0)
     dx = abs(x1 - x0)
-
-    err = dx + dy
-
-    # first iteration takes into an account map so we are trying to avoid the cover 
-    e2 = 2 * err 
+    dy = -abs(y1 - y0)
     
+    err = dx + dy 
+    e2 = 2 * err 
+
     inc_x = False
     inc_y = False
-
+    
+    # One step of bresenham to detect if there is a cover 
     if e2 >= dy:
         x0 += sx
         err += dy
         inc_x = True 
 
     if e2 <= dx:
-        y0 += sy 
+        y0 += sy
         err += dx
         inc_y = True
-    
-    if m[y0][x0]: # if there is a wall we try to find next free spot
+
+    if m[y0][x0]: # if there is cover we try to find out if it does block path
+
+        # if we did move only one direction let's try to compensate for that
         if not inc_x: # position refinment for cover
             x0 += sx
         if not inc_y: # position refinment for cover
             y0 += sy 
 
         if inc_x and inc_y: # we've moved diagonally and there is a cover, let's check other options
-            e2 = 2 * err
-            
             if abs(dx) == abs(dy): # ideally diagonal - no hit chance
-                return (route,False)
+                return ((x0,y0),False)
 
             if abs(dx) < abs(dy) and not m[y0][x0 - sx]: # check if target is below or above the diagonal line
                 x0 -= sx
             elif abs(dy) < abs(dx) and not m[y0 - sy][x0]:
                 y0 -= sy 
 
-        # recalculate dy and dx and error since we want to start from new position
-        dy = -abs(y1 - y0)
-        dx = abs(x1 - x0)
-        err = dx + dy
-    
     if m[y0][x0]: # still obstacle so no route to target
-        route.append((x0,y0))
-        return (route,False)
+        return ((x0,y0),False)
+
+    return ((x0,y0),True)
+
+def trace_shoot(m,source,destination):
+    route = []
+
+    refined_src,src_ref_res = refine_src_position(m,source,destination)
+    refined_dst,dst_ref_res = refine_src_position(m,destination,source)
+    
+    x0,y0 = refined_src 
+    x1,y1 = refined_dst 
+    
     route.append((x0,y0))
+
+    if not src_ref_res or not dst_ref_res:
+        return (route, False)
+    
+    sx = sign(x1 - x0)
+    sy = sign(y1 - y0)
+    dx = abs(x1 - x0)
+    dy = -abs(y1 - y0)
+    
+    err = dx + dy 
     
     # continue with normal bresenham
     while(True):
@@ -78,5 +91,6 @@ def trace_shoot(m,source,destination):
         if m[y0][x0] == 1:
             return (route, False)
         route.append((x0,y0))
-
+    
+    route.append((x1,y1))
     return (route, True)
