@@ -4,6 +4,7 @@ import utils
 import os 
 from shoot_tracer import trace_shoot
 import math
+import pprint
 
 def calc_dds(x0, y0, x1, y1):
     dx = x1 - x0
@@ -21,20 +22,20 @@ def calc_dds(x0, y0, x1, y1):
 
     return (dx, dy, int(step))
 
-if __name__ == "__main__":
-    x0, y0 = (0.0, 0.0)
-    x1, y1 = (1.0, 5.0)
+def plot_line(x0, y0, x1, y1):
+    ret = []
 
-    bx0 = x0
-    by0 = y0
-
-    dx,dy,step = calc_dds(x0,y0,x1,y1)
-
-    print("Step: {0}".format(step))
-    print("dx: {0}, dy: {1}".format(dx,dy))
+    dx, dy, step = calc_dds(x0, y0, x1, y1)
 
     for i in range(0, step + 1):
-        x0 = bx0 + i * dx
-        y0 = by0 + i * dy
-        
-        print((round(x0),round(y0),i))
+        x = x0 + i * dx
+        y = y0 + i * dy
+        ret.append((round(x), round(y)))
+
+    return ret
+
+if __name__ == "__main__":
+    print(plot_line(0.0, 0.0, 1.0, 5.0))
+    print(plot_line(1.0, 5.0, 0.0, 0.0))
+    print(plot_line(0.0, 0.0, 1.0, 6.0))
+    print(plot_line(1.0, 6.0, 0.0, 0.0))
