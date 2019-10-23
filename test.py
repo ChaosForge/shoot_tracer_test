@@ -5,7 +5,7 @@ import os
 from shoot_tracer import trace_shoot
 
 def run_case(map_file_name, output_file_name):
-    p = utils.picture(256,256,16)
+    p = utils.picture(16,16)
     m,player_pos,enemy_pos,expected_result = utils.load_map(map_file_name)
     utils.draw_map(m,p)
     r,succ = trace_shoot(m,player_pos,enemy_pos)
