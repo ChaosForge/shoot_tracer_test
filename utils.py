@@ -6,7 +6,7 @@ import re
 
 class picture(object):
     def __init__(self, width, height):
-        self.__array = numpy.full((height,width*4), 255, dtype=numpy.uint8)
+        self.__array = numpy.full((height,width*4), 232, dtype=numpy.uint8)
         self.__view = self.__array.view().reshape(-1,4)
         self.__width = width
         self.__height = height
@@ -57,13 +57,13 @@ def draw_map(m,p):
     for y,r in enumerate(m):
         for x,c in enumerate(r):
             if c == 1:
-                p.put_pixel(x,y,(0, 0, 0, 255)) 
+                p.put_pixel(x,y,(64, 64, 64, 255)) 
             if c == 2:
                 p.put_pixel(x,y,(0, 255, 0, 255))
             if c == 3:
                 p.put_pixel(x,y,(255, 0, 0, 255))
 
-def draw_route(route,p):
+def draw_route(route,p,c):
     for e in route:
         x,y = e
-        p.put_pixel(x,y,(255,0,255,128))
+        p.put_pixel(x,y,c)
