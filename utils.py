@@ -5,28 +5,27 @@ import math
 import re
 
 class picture(object):
-    def __init__(self, width, height, pixel_size = 1):
+    def __init__(self, width, height):
         self.__array = numpy.full((height,width*4), 255, dtype=numpy.uint8)
         self.__view = self.__array.view().reshape(-1,4)
         self.__widht = width
         self.__heihgt = height
-        self.__pixel_size = pixel_size
 
     def put_pixel(self, x, y, color):
-        row = y * self.__pixel_size 
-        col = x * self.__pixel_size
+        row = y  
+        col = x 
         c = numpy.array(color)
         sa_01 = c[3] / 255.0
         o_m_a = 1.0 - sa_01
         sc = c * sa_01 
-        for yy in range(row, row + self.__pixel_size):
-            index = self.__widht * yy 
-            for xx in range(col, col + self.__pixel_size):
-                idx = index + xx
-                self.__view[idx] = sc + o_m_a * self.__view[idx]
+        idx = self.__widht * y + x 
+        self.__view[idx] = sc + o_m_a * self.__view[idx]
 
     def save(self, filename):
-        png.from_array(self.__array, mode='RGBA').save(filename)
+        v = self.__array.view().reshape(self.__heihgt, self.__widht,4)
+        a = v.repeat(32, axis=0).repeat(32, axis=1)
+        sv = a.view().reshape(self.__heihgt * 32, self.__widht * 32 * 4)
+        png.from_array(sv, mode='RGBA').save(filename)
 
 TRUE_RE = re.compile(".*True.*")
 
