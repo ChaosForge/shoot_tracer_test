@@ -12,12 +12,12 @@ def calc_dds(x0, y0, x1, y1):
     step = adx if adx >= ady else ady
     
     if step == 0:
-        return (1, 1, int(step))
+        return (0, 0, step)
 
     dx = dx / step
     dy = dy / step
 
-    return (dx, dy, int(step))
+    return (dx, dy, step)
 
 def trace_line(m, x0, y0, x1, y1):
     ret = []
