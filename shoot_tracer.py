@@ -1,5 +1,6 @@
 import pprint
-from line_tracer import trace_line 
+from line_tracer import trace_line
+from line_tracer import calc_dda
 
 def sign( x ):
     if x == 0:
@@ -7,52 +8,44 @@ def sign( x ):
     return 1 if x > 0 else -1
 
 def refine_src_position(m,source,destination):
-    x0,y0 = source
-    x1,y1 = destination 
+    x0, y0 = source
+    x1, y1 = destination 
 
+    # use same algorithm as for line tracing
+    dx, dy, _ = calc_dda(x0, y0, x1, y1)
+   
+    # perform one step of the algorithm
+    x = round(x0 + dx)
+    y = round(y0 + dy)
+
+    # detect if we moved in x or y or both
+    inc_x = abs(x - x0) == 1
+    inc_y = abs(y - y0) == 1
+
+    # calculate direction for x and y
     sx = sign(x1 - x0)
     sy = sign(y1 - y0)
-    dx = abs(x1 - x0)
-    dy = -abs(y1 - y0)
-    
-    err = dx + dy 
-    e2 = 2 * err 
 
-    inc_x = False
-    inc_y = False
-    
-    # One step of bresenham to detect if there is a cover 
-    if e2 >= dy:
-        x0 += sx
-        err += dy
-        inc_x = True 
-
-    if e2 <= dx:
-        y0 += sy
-        err += dx
-        inc_y = True
-
-    if m[y0][x0]: # if there is cover we try to find out if it does block path
-
+    if m[y][x]: # if there is cover we try to find out if it does block path
         # if we did move only one direction let's try to compensate for that
         if not inc_x: # position refinment for cover
-            x0 += sx
+            x += sx
         if not inc_y: # position refinment for cover
-            y0 += sy 
+            y += sy 
 
         if inc_x and inc_y: # we've moved diagonally and there is a cover, let's check other options
             if abs(dx) == abs(dy): # ideally diagonal - no hit chance
-                return ((x0,y0),False)
+                return ((x,y),False)
 
-            if abs(dx) < abs(dy) and not m[y0][x0 - sx]: # check if target is below or above the diagonal line
-                x0 -= sx
-            elif abs(dy) < abs(dx) and not m[y0 - sy][x0]:
-                y0 -= sy 
+            if abs(dx) < abs(dy) and not m[y][x - sx]: # check if target is below or above the diagonal line
+                x -= sx
+            elif abs(dy) < abs(dx) and not m[y - sy][x]:
+                y -= sy 
 
-    if m[y0][x0]: # still obstacle so no route to target
-        return ((x0,y0),False)
+    if m[y][x]: # still obstacle so no route to target
+        return ((x,y),False)
 
-    return ((x0,y0),True)
+    return ((x,y),True)
 
 def trace_shoot(m,source,destination):
     # calculate refined positions for taking cover into account
