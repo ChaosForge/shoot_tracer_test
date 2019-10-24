@@ -1,6 +1,6 @@
 import math
 
-def calc_dds(x0, y0, x1, y1):
+def calc_dda(x0, y0, x1, y1):
     dx = x1 - x0
     dy = y1 - y0
 
@@ -22,7 +22,7 @@ def calc_dds(x0, y0, x1, y1):
 def trace_line(m, x0, y0, x1, y1):
     ret = []
 
-    dx, dy, step = calc_dds(x0, y0, x1, y1)
+    dx, dy, step = calc_dda(x0, y0, x1, y1)
 
     for i in range(0, step + 1):
         x = round(x0 + i * dx)
