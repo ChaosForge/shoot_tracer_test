@@ -1,10 +1,4 @@
-#!/usr/bin/env python3
-
-import utils 
-import os 
-from shoot_tracer import trace_shoot
 import math
-import pprint
 
 def calc_dds(x0, y0, x1, y1):
     dx = x1 - x0
@@ -33,9 +27,3 @@ def plot_line(x0, y0, x1, y1):
         ret.append((round(x), round(y)))
 
     return ret
-
-if __name__ == "__main__":
-    print(plot_line(0.0, 0.0, 1.0, 5.0))
-    print(plot_line(1.0, 5.0, 0.0, 0.0))
-    print(plot_line(0.0, 0.0, 1.0, 6.0))
-    print(plot_line(1.0, 6.0, 0.0, 0.0))
