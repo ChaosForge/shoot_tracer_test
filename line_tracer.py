@@ -25,8 +25,8 @@ def trace_line(m, x0, y0, x1, y1):
     dx, dy, step = calc_dds(x0, y0, x1, y1)
 
     for i in range(0, step + 1):
-        x = round( x0 + i * dx )
-        y = round( y0 + i * dy )
+        x = round(x0 + i * dx)
+        y = round(y0 + i * dy)
 
         if m[y][x]:
             return (ret, False)
