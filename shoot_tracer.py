@@ -55,8 +55,6 @@ def refine_src_position(m,source,destination):
     return ((x0,y0),True)
 
 def trace_shoot(m,source,destination):
-    route = []
-    
     # calculate refined positions for taking cover into account
     refined_src,src_ref_res = refine_src_position(m,source,destination)
     refined_dst,dst_ref_res = refine_src_position(m,destination,source)
@@ -66,7 +64,7 @@ def trace_shoot(m,source,destination):
     
     # check if refined positions are correct
     if not src_ref_res or not dst_ref_res:
-        return (route, False)
+        return ([], False)
     
     # use trace line algorithm to create path
     return trace_line(m, x0, y0, x1, y1)
