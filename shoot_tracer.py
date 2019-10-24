@@ -1,4 +1,5 @@
 import pprint
+from line_tracer import trace_line 
 
 def sign( x ):
     if x == 0:
@@ -55,42 +56,17 @@ def refine_src_position(m,source,destination):
 
 def trace_shoot(m,source,destination):
     route = []
-
+    
+    # calculate refined positions for taking cover into account
     refined_src,src_ref_res = refine_src_position(m,source,destination)
     refined_dst,dst_ref_res = refine_src_position(m,destination,source)
     
     x0,y0 = refined_src 
     x1,y1 = refined_dst 
     
-    route.append((x0,y0))
-
+    # check if refined positions are correct
     if not src_ref_res or not dst_ref_res:
         return (route, False)
     
-    sx = sign(x1 - x0)
-    sy = sign(y1 - y0)
-    dx = abs(x1 - x0)
-    dy = -abs(y1 - y0)
-    
-    err = dx + dy 
-    
-    # continue with normal bresenham
-    while(True):
-        e2 = 2 * err
-        if e2 >= dy:
-            err += dy
-            x0 += sx
-        if e2 <= dx: 
-            err += dx
-            y0 += sy
-        if x0 == x1 and y0 == y1:
-            break
-        if x0 <= 0 or y0 <= 0 or x0 >= 16 or y0 >= 16:
-            print("Out of bounds!")
-            return (route, False)
-        if m[y0][x0] == 1:
-            return (route, False)
-        route.append((x0,y0))
-    
-    route.append((x1,y1))
-    return (route, True)
+    # use trace line algorithm to create path
+    return trace_line(m, x0, y0, x1, y1)
