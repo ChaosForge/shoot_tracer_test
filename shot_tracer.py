@@ -47,7 +47,7 @@ def refine_src_position(m,source,destination):
 
     return ((x,y),True)
 
-def trace_shoot(m,source,destination):
+def trace_shot(m,source,destination):
     # calculate refined positions for taking cover into account
     refined_src,src_ref_res = refine_src_position(m,source,destination)
     refined_dst,dst_ref_res = refine_src_position(m,destination,source)
