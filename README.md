@@ -1,6 +1,6 @@
-# Shoot Tracer Test
+# Shot Tracer Test
 
-Test of shoot tracing algorithm for JupiterHell.
+Test of shot tracing algorithm for JupiterHell.
 
 # Problem
 
