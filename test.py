@@ -2,7 +2,7 @@
 
 import utils 
 import os 
-from shoot_tracer import trace_shoot
+from shot_tracer import trace_shot
 
 CANVAS_SIZE = (16, 16)
 
@@ -10,8 +10,8 @@ def run_case(map_file_name, output_file_name):
     p = utils.picture(CANVAS_SIZE[0],CANVAS_SIZE[1])
     m,player_pos,enemy_pos,expected_result,width,height = utils.load_map(map_file_name,CANVAS_SIZE)
     utils.draw_map(m,p)
-    r,succ = trace_shoot(m,player_pos,enemy_pos)
-    r1,succ1 = trace_shoot(m,enemy_pos,player_pos)
+    r,succ = trace_shot(m,player_pos,enemy_pos)
+    r1,succ1 = trace_shot(m,enemy_pos,player_pos)
 
     utils.draw_route(r,p,(64,220,0,180))
     utils.draw_route(r1,p,(220,64,0,180))
