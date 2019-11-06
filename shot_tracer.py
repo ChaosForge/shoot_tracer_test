@@ -1,22 +1,22 @@
 import pprint
 from line_tracer import trace_line
-from line_tracer import calc_dda
+from line_tracer import dda_data
 
 def sign( x ):
     if x == 0:
         return 0
     return 1 if x > 0 else -1
 
+# Src position refinment for now it is not used as rounding works just fine
 def refine_src_position(m,source,destination):
     x0, y0 = source
     x1, y1 = destination 
 
     # use same algorithm as for line tracing
-    dx, dy, _ = calc_dda(x0, y0, x1, y1)
-   
+    dda = dda_data(x0, y0, x1, y1)
+  
     # perform one step of the algorithm
-    x = round(x0 + dx)
-    y = round(y0 + dy)
+    x, y = dda.calc_pos(1)
 
     # detect if we moved in x or y or both
     inc_x = abs(x - x0) == 1
@@ -34,12 +34,13 @@ def refine_src_position(m,source,destination):
             y += sy 
 
         if inc_x and inc_y: # we've moved diagonally and there is a cover, let's check other options
-            if abs(dx) == abs(dy): # ideally diagonal - no hit chance
+            if abs(dda.dx) == abs(dda.dy): # ideally diagonal - no hit chance
                 return ((x,y),False)
 
-            if abs(dx) < abs(dy) and not m[y][x - sx]: # check if target is below or above the diagonal line
+            if abs(dda.dx) < abs(dda.dy) and not m[y][x - sx]: # check if target is below or above the diagonal line
                 x -= sx
-            elif abs(dy) < abs(dx) and not m[y - sy][x]:
+
+            elif abs(dda.dy) < abs(dda.dx) and not m[y - sy][x]:
                 y -= sy 
 
     if m[y][x]: # still obstacle so no route to target
@@ -48,16 +49,15 @@ def refine_src_position(m,source,destination):
     return ((x,y),True)
 
 def trace_shot(m,source,destination):
-    # calculate refined positions for taking cover into account
-    refined_src,src_ref_res = refine_src_position(m,source,destination)
-    refined_dst,dst_ref_res = refine_src_position(m,destination,source)
+    # calculate refined positions for taking cover into account 
+    #refined_src,src_ref_res = refine_src_position(m,source,destination)
+    #refined_dst,dst_ref_res = refine_src_position(m,destination,source)
     
-    x0,y0 = refined_src 
-    x1,y1 = refined_dst 
-    
-    # check if refined positions are correct
-    if not src_ref_res or not dst_ref_res:
-        return ([], False)
-    
+    x0,y0 = source 
+    x1,y1 = destination
+
+    #if not src_ref_res or not dst_ref_res:
+    #    return ([], False)
+
     # use trace line algorithm to create path
     return trace_line(m, x0, y0, x1, y1)
