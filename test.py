@@ -21,6 +21,7 @@ class bcolors:
 def run_case(map_file_name, output_file_name):
     p = utils.picture(CANVAS_SIZE[0],CANVAS_SIZE[1])
     m,player_pos,enemy_pos,expected_result,width,height = utils.load_map(map_file_name,CANVAS_SIZE)
+
     utils.draw_map(m,p)
     r,succ = trace_shot(m,player_pos,enemy_pos)
     r1,succ1 = trace_shot(m,enemy_pos,player_pos)
@@ -30,8 +31,8 @@ def run_case(map_file_name, output_file_name):
 
     utils.draw_route(r,p,(64,255,64,180))
     utils.draw_route(r1,p,(255,64,64,180))
-    utils.draw_route(rr_f,p,(64,64,180,32))
-    utils.draw_route(rr_c,p,(64,180,64,32))
+    #utils.draw_route(rr_f,p,(64,64,180,32))
+    #utils.draw_route(rr_c,p,(64,180,64,32))
 
     p.save(output_file_name)
     if succ == expected_result and succ1 == expected_result:

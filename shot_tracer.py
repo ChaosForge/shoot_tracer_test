@@ -13,7 +13,7 @@ def refine_src_position(m,source,destination):
     x1, y1 = destination 
 
     # use same algorithm as for line tracing
-    dda = dda_data(x0, y0, x1, y1)
+    dda = dda_data(source, destination)
   
     # perform one step of the algorithm
     x, y = dda.calc_pos(1)
@@ -50,14 +50,14 @@ def refine_src_position(m,source,destination):
 
 def trace_shot(m,source,destination):
     # calculate refined positions for taking cover into account 
-    #refined_src,src_ref_res = refine_src_position(m,source,destination)
-    #refined_dst,dst_ref_res = refine_src_position(m,destination,source)
+    ref_src,src_ref_res = refine_src_position(m,source,destination)
+    ref_dst,dst_ref_res = refine_src_position(m,destination,source)
     
-    x0,y0 = source 
-    x1,y1 = destination
-
-    #if not src_ref_res or not dst_ref_res:
-    #    return ([], False)
+    if not src_ref_res or not dst_ref_res:
+        return ([], False)
+    
+    if ref_src == ref_dst:
+        return ([ref_src], True)
 
     # use trace line algorithm to create path
-    return trace_line(m, x0, y0, x1, y1)
+    return trace_line(m, source, destination, ref_src, ref_dst)
